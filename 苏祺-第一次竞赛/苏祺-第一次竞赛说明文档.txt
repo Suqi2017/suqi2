@@ -1,0 +1,71 @@
+                                                                  第一次竞赛程序说明文档
+实现的思路：
+我这次程序的实现使用的是二分类逻辑回归中的梯度下降算法，其中是使用非线性逻辑回归。
+调用pandas和numpy和matplotlib.pyplot库
+
+写一个loadDataSet()函数用于数据集的读取
+首先是的把数据集读进去传给data
+data = pd.read_csv(r'C:\Users\25447\Desktop\zouye\HTRU_2_train.csv',header = None)
+获取数据的类型0或1传给data[2]
+data[2] = pd.Categorical(data[2]).codes
+再把数据在第一二列进行纵向切割并读取出来赋给dataMatIn,classLabels
+dataMatIn,classLabels = np.split(data.values,(2,),axis = 1)
+将dataMatIn中的数据取出，前2列
+取classLabels中的所有行，重新赋值
+返回dataMatIn,classLabels
+
+又调用了sigmoid()函数
+def sigmoid(z):
+    return 1/(1+np.exp(-z))
+
+写一个梯度下降算法函数grad_descent()
+用这个函数主要是算出回归系数
+def grad_descent(dataMatIn,classLabels):
+    dataMatrix = np.mat(dataMatIn)#转化成矩阵
+    labelMat = np.mat(classLabels)
+    m,n = np.shape(dataMatrix)    #将矩阵的行和列赋值给m,n
+    weights = np.ones((n,1))      #生成一个n行1列的单位矩阵 
+    alpha = 0.001                 #学习率
+    maxCycle = 500              #最大循环次数
+    for i in range(maxCycle):
+        h = sigmoid(dataMatrix * weights)#预测值
+        weights = weights - alpha*dataMatrix.transpose()*(h-labelMat)#更新权重
+    return weights#返回回归系数
+
+写一个plotBestFit()函数
+    dataMat,labelMat=loadDataSet()  #获取数据和类别
+    dataArr = np.array(dataMat)     #将数据转化为数组
+    n = np.shape(dataArr)[0]        #数组中第一列的个数
+    fig = plt.figure()   #画布
+根据自己写的那个曲线方程来找到那个纵轴的y
+y =(((-weights[0]-weights[1]*x)/weights[2]))**3/610
+
+最后用于把数据进行分类可视化呈现
+
+在预测的实现中
+把要预测的数据读取，再用前面自己设计的那个曲线方程来把数据进行预测分类
+下面这个循环是来预测测试集中的数据的类别
+for i in range(700):
+    if(prey[i] > truey[i]):
+        kong.append(0)
+    else:
+        kong.append(1)
+下面这两行是给生成的数据的行和列命名，且行号设置为从1开始计算
+test = pd.DataFrame(data = kong,index=range(1,701),columns=['y'])
+test.index.name='id'
+最后在生成一个test1文件进行提交预测
+
+
+问题及解决：
+1.在数据读取的过程中读取的方法不对，后来在数据的读取路径前加上一个‘r’就解决了
+2.在选取回归曲线时，经过了很多次的实验验证，y =(((-weights[0]-weights[1]*x)/weights[2]))**3/610
+3.那个第一列一开始没设置，后来提交时出错了，上网查阅资料给第一列加了一个行号：test.index.name='id'
+4.起初行号没设置是从0开始计算的，到提交时被告知提交的不符合规定，查阅资料该进伟：index=range(1,701)
+
+
+
+
+
+
+
+
