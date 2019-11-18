@@ -1,0 +1,119 @@
+实现方法：本次多分类问题的竞赛我采用的是决策树分类方法
+
+
+实现过程：
+1.首先是打开训练集，并以csv.reader的形式读取，并把它转化为列表的形式。如下：
+   file = open(r"C:\Users\25447\Desktop\第二次竞赛\train.csv")
+   fileReader = csv.reader(file)
+   filedata =list(fileReader)
+2.把二维列表中的数据转换组成二维列表
+   （ 实现过程稍微有些麻烦）实现如下：
+第一先赋值空列表
+a = []
+b = []
+c = []
+d = []
+e = []
+f = []
+g = []
+h = []
+n = []
+j = []
+k = []
+l = []
+m = []
+t = []
+
+
+第二把filedata中的值按列填到空列表中
+
+
+for i in filedata:
+    a.append(i[0])
+    b.append(i[1])
+    c.append(i[2])
+    d.append(i[3])
+    e.append(i[4])
+    f.append(i[5])
+    g.append(i[6])
+    h.append(i[7])
+    n.append(i[8])
+    j.append(i[9])
+    k.append(i[10])
+    l.append(i[11])
+    m.append(i[12])
+    t.append(i[13])
+
+第三步把前13列取出来单独组成二维列表u，最后一列单独组成一维o
+
+
+a2 = np.array(a)
+b2 = np.array(b)
+c2 = np.array(c)
+d2 = np.array(d)
+e2 = np.array(e)
+f2 = np.array(f)
+g2 = np.array(g)
+h2 = np.array(h)
+n2 = np.array(n)
+j2 = np.array(j)
+k2 = np.array(k)
+l2 = np.array(l)
+m2 = np.array(m)
+
+o = np.array(t)
+z = list(zip(a2,b2,c2,d2,e2,f2,g2,h2,n2,j2,k2,l2,m2))
+#print(z)
+u =np.array(z)
+#print(u.shape)
+#print(u)
+
+
+3 .调用sklearn库
+from sklearn import tree
+
+4.训练模型
+clf = tree.DecisionTreeClassifier()
+clf.fit(u,o)
+
+5. 读取测试集与读取训练集一样
+
+6.同样把读取出来的数据转换为二维数组u1
+
+7.预测测试集
+ew =clf.predict(u1)
+
+8.把预测得到的数据按老师给的要求保存
+test = pd.DataFrame(data = ew,index = range(1,1799),columns=['y'])
+test.index.name = 'id'
+test.to_csv('new2.csv')
+
+
+
+问题：
+1其实一开始也不知道用什么模型，根据了解决策树、knn、神经网络都可以，后来我就选择了决策树。
+2.在一开始的过程中，没有注意数据中的“？”，所以写完测试时，就报错了，我就像把这个“？”要变成什么，
+   在网上查，也和同学们交流过后，了解到了可以把“？”设置为特定值。
+3.在设置特定值时，又发现问题，设置成什么值呢，我又头疼了，看ppt，上网查，得知可以把“？”设置为每列的
+   众数，中位数，平均数等，在我的试验下，得出，把“？”设置为0时，测试得出的正确率最好
+4.我想直接的把“？”替换成0，不想费脑子了，直接写了两个for循环直接实现，例如
+for i  in  range(7194):
+    for j in range(14):
+        aa = '?'
+        if filedata[i][j] == '?':
+            filedata[i][j] = 0
+5.其实这次决策树模型的正确率并不是很好，优化了一阵子，效果不咋好，算了，反正大家都是百分之三十几，不写了，提交吧
+
+
+
+
+
+
+
+
+
+
+
+
+
+
